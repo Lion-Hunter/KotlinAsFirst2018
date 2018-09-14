@@ -70,7 +70,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minute
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
     val sm = (sagenes *  48 + arshins * 48 + vershoks) * 4.445
-    val meters = sm / 100
+    val meters = sm / 100.0
     return meters
 }
 
@@ -82,7 +82,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
  */
 fun angleInRadian(grad: Int, min: Int, sec: Int): Double {
     val grads = grad + min / 60.0 + sec / 3600.0
-    val radians = grads / PI
+    val radians = grads * PI / 180.0
     return radians
 }
 
