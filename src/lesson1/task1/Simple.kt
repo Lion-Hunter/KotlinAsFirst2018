@@ -69,7 +69,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * 3600 + minute
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
-    val sm = (sagenes * 144 + arshins * 48 + vershoks) * 4.445
+    val sm = (sagenes * 48 + arshins * 48 + vershoks) * 4.445
     val meters = sm / 100
     return meters
 }
@@ -81,7 +81,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(grad: Int, min: Int, sec: Int): Double {
-    val grads = grad + min / 60 + sec / 3600
+    val grads = grad + min / 60.0 + sec / 3600.0
     val radians = grads / PI
     return radians
 }
@@ -95,7 +95,7 @@ fun angleInRadian(grad: Int, min: Int, sec: Int): Double {
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
     val x = x2 - x1
     val y = y2 - y1
-    val length = sqr(x * x + y * y)
+    val length = sqrt(x * x + y * y)
     return length
 }
 
