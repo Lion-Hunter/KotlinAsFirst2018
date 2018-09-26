@@ -108,10 +108,14 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
+    val rook1 = (kingX == rookX1) || (kingY == rookY1)
+    val rook2 = (kingX == rookX2) || (kingY == rookY2)
+    val notRook2 = (kingX != rookX2) && (kingY != rookY2)
+    val notRook1 = (kingX != rookX1) && (kingY != rookY1)
     return when {
-        ((kingX == rookX1) || (kingY == rookY1)) && (kingX != rookX2) && (kingY != rookY2) -> 1
-        ((kingX == rookX2) || (kingY == rookY2)) && (kingX != rookX1) && (kingY != rookY1) -> 2
-        ((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2)) -> 3
+        rook1 && notRook2 -> 1
+        rook1 && notRook1 -> 2
+        (rook1) && rook2 -> 3
         else -> 0
     }
 }
@@ -129,10 +133,14 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
+    val rook = (kingX == rookX) || (kingY == rookY)
+    val bishop = abs(kingX - bishopX) == abs(kingY - bishopY)
+    val notRook = (kingX != rookX) && (kingY != rookY)
+    val notBishop = abs(kingX - bishopX) != abs(kingY - bishopY)
     return when {
-        (abs(kingX - bishopX) == abs(kingY - bishopY)) && (kingX != rookX) && (kingY != rookY) -> 2
-        (abs(kingX - bishopX) != abs(kingY - bishopY)) && ((kingX == rookX) || (kingY == rookY)) -> 1
-        (abs(kingX - bishopX) == abs(kingY - bishopY)) && ((kingX == rookX) || (kingY == rookY)) -> 3
+        bishop && notRook -> 2
+        notBishop && rook -> 1
+        bishop && rook -> 3
         else -> 0
     }
 }
@@ -184,21 +192,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((b >= c) && (d >= a)) {
-        return when {
-            (c >= a) && (b <= d) -> b - c
-            (c <= a) && (b <= d) -> b - a
-            (c >= a) && (b >= d) -> d - c
-            else -> d - a
-
-        }
-    } else if ((d >= a) && (b >= c)) {
-        return when {
-            (a >= c) && (d <= b) -> d - a
-            (a <= c) && (d <= b) -> d - c
-            (a >= c) && (d >= b) -> b - a
-            else -> b - c
-        }
-    } else return -1
-
+    return when {
+        (a <= c) && (d <= b) -> d - c
+        (a >= c) && (d >= b) -> b - a
+        a in c..d -> d - a
+        b in c..d -> b - c
+        else -> -1
+    }
 }
