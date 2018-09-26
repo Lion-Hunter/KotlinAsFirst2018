@@ -114,7 +114,7 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
     val notRook1 = (kingX != rookX1) && (kingY != rookY1)
     return when {
         rook1 && notRook2 -> 1
-        rook1 && notRook1 -> 2
+        rook2 && notRook1 -> 2
         (rook1) && rook2 -> 3
         else -> 0
     }
