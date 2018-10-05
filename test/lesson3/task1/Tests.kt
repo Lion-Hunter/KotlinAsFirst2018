@@ -90,15 +90,15 @@ class Tests {
     @Test
     @Tag("Easy")
     fun lcm() {
-        assertEquals(13, lcm(13, 13))
-        assertEquals(8, lcm(2, 8))
-        assertEquals(24, lcm(6, 8))
-        assertEquals(975, lcm(39, 75))
         assertEquals(13384091, lcm(1357, 9863))
         assertEquals(1339310349, lcm(13579, 98631))
         assertEquals(2089830349, lcm(23579, 88631))
         assertEquals(2022222222, lcm(2, 1011111111))
         assertEquals(2022222222, lcm(1011111111, 2))
+        assertEquals(13, lcm(13, 13))
+        assertEquals(8, lcm(2, 8))
+        assertEquals(24, lcm(6, 8))
+        assertEquals(975, lcm(39, 75))
     }
 
     @Test
@@ -110,7 +110,7 @@ class Tests {
         assertEquals(97, minDivisor(97))
         assertEquals(7, minDivisor(49))
         assertEquals(17, minDivisor(8653))
-        assertEquals(2124679 , minDivisor(2124679 ))
+        assertEquals(2124679, minDivisor(2124679))
         assertEquals(1073676287, minDivisor(1073676287))
         assertEquals(Int.MAX_VALUE, minDivisor(Int.MAX_VALUE))
     }
@@ -124,7 +124,7 @@ class Tests {
         assertEquals(17, maxDivisor(34))
         assertEquals(7, maxDivisor(49))
         assertEquals(509, maxDivisor(8653))
-        assertEquals(1 , maxDivisor(2124679 ))
+        assertEquals(1, maxDivisor(2124679 ))
         assertEquals(1, maxDivisor(1073676287))
         assertEquals(1, maxDivisor(Int.MAX_VALUE))
     }
@@ -233,6 +233,7 @@ class Tests {
     @Test
     @Tag("Hard")
     fun fibSequenceDigit() {
+        assertEquals(8, fibSequenceDigit(128))
         assertEquals(1, fibSequenceDigit(1))
         assertEquals(1, fibSequenceDigit(2))
         assertEquals(3, fibSequenceDigit(4))
