@@ -165,7 +165,14 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = ceil(sqr(n.toDouble())) - floor(sqr(m.toDouble())) > 0
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    var sqrtN = sqrt(n.toDouble()).toInt()
+    var sqrtM = sqrt(m.toDouble()).toInt()
+    for (i in sqrtM..sqrtN) {
+        if (i * i in m..n) return true
+    }
+    return false
+}
 
 /**
  * Средняя
@@ -201,14 +208,13 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var n = x % (2 * PI)
-    val newX = n
+    var n = 1.0
+    val newX = x % (2 * PI)
     val a = -1.0
     var count = 1.0
-    var i = 3
-    while (abs(newX.pow(i) / factorial(i) / 1.0) >= eps) {
-        val value = newX.pow(i) / factorial(i)
-        n += a.pow(count) * value
+    var i = 2
+    while ((abs(newX.pow(i) / factorial(i) / 1.0)) >= eps) {
+        n += a.pow(count) * newX.pow(i) / factorial(i)
         count++
         i += 2
     }
@@ -228,10 +234,12 @@ fun cos(x: Double, eps: Double): Double {
     val a = -1.0
     var count = 1.0
     var i = 2
-    while ((abs(newX.pow(i) / factorial(i) / 1.0)) >= eps) {
-        n += a.pow(count) * newX.pow(i) / factorial(i)
+    var add = newX.pow(i) / factorial(i)
+    while (abs(add / 1.0) >= eps) {
+        n += a.pow(count) * add
         count++
         i += 2
+        add = newX.pow(i) / factorial(i)
     }
     return n
 }
@@ -296,14 +304,25 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
+fun square(n: Int, q: Int): Int {
     var length = 0
     var count = 1
     var result = 0
-    while (length < n) {
-        length += digitNumber(count * count)
-        result = count * count
-        count++
+    if (q == 1){
+        while (length < n) {
+            val comp = count * count
+            length += digitNumber(comp)
+            result = comp
+            count++
+        }
+    } else {
+        while (length < n) {
+            val fi = fib(count)
+            length += digitNumber(fi)
+            result = fi
+            count++
+        }
+
     }
 
     while (n < length) {
@@ -312,6 +331,8 @@ fun squareSequenceDigit(n: Int): Int {
     }
     return result % 10
 }
+
+fun squareSequenceDigit(n: Int): Int = square(n, 1)
 
 /**
  * Сложная
@@ -322,20 +343,4 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var length = 0
-    var count = 1
-    var result = 0
-    while (length < n) {
-        length += digitNumber(fib(count))
-        result = fib(count)
-        count++
-    }
-
-    while (n < length) {
-        result /= 10
-        length--
-    }
-
-    return result % 10
-}
+fun fibSequenceDigit(n: Int): Int = square(n, 0)
