@@ -208,15 +208,17 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var n = 1.0
-    val newX = x % (2 * PI)
+    var n = x % (2 * PI)
+    val newX = n
     val a = -1.0
     var count = 1.0
-    var i = 2
-    while ((abs(newX.pow(i) / factorial(i) / 1.0)) >= eps) {
-        n += a.pow(count) * newX.pow(i) / factorial(i)
+    var i = 3
+    var add = newX.pow(i) / factorial(i)
+    while (abs(add) >= eps) {
+        n += a.pow(count) * add
         count++
         i += 2
+        add = newX.pow(i) / factorial(i)
     }
     return n
 }
