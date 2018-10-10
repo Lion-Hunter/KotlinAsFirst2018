@@ -1,9 +1,13 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson3.task1
 
+import lesson1.task1.sqr
+import java.util.function.LongFunction
 import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.math.*
+
 /**
  * Пример
  *
@@ -39,7 +43,7 @@ fun isPrime(n: Int): Boolean {
  */
 fun isPerfect(n: Int): Boolean {
     var sum = 1
-    for (m in 2..n/2) {
+    for (m in 2..n / 2) {
         if (n % m > 0) continue
         sum += m
         if (sum > n) break
@@ -85,19 +89,14 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    var num = 2
+    var num = 1
     var last = 1
-    var s = 0
-    when {
-        n > 3 -> {
-            for (i in 4..n) {
-                s = last
-                last = num
-                num += s
-            }
+    if (n > 0) {
+        for (i in 3..n) {
+            val s = last
+            last = num
+            num += s
         }
-        n == 3 -> num = 2
-        n in 1..2 -> num = 1
     }
     return num
 }
@@ -109,14 +108,12 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var result = 0
-    for (i in 1..Int.MAX_VALUE) {
-        if (max(m, n) * i % min(m, n) == 0) {
-            result = max(m, n) * i
-            break
-        }
+    var a = m
+    var b = n
+    while ((a != 0) && (b != 0)) {
+        if (a > b) a %= b else b %= a
     }
-    return result
+    return m * n / (a + b)
 }
 
 /**
@@ -139,14 +136,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var maxDiv = n - 1
-    if (n == 2) return 1
-    do {
-        if (n % maxDiv == 0) return maxDiv else maxDiv--
-    } while (0 < maxDiv)
-    return maxDiv
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -175,13 +165,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean {
-    if ((m == n) && (n == 0)) return true
-    for (i in 1..sqrt(n.toDouble()).toInt()) {
-        if (i * i in m..n) return true
-    }
-    return false
-}
+fun squareBetweenExists(m: Int, n: Int): Boolean = ceil(sqr(n.toDouble())) - floor(sqr(m.toDouble())) > 0
 
 /**
  * Средняя
@@ -222,8 +206,9 @@ fun sin(x: Double, eps: Double): Double {
     val a = -1.0
     var count = 1.0
     var i = 3
-    while ((abs(newX.pow(i) / factorial(i) / 1.0)) >= eps) {
-        n += a.pow(count) * newX.pow(i) / factorial(i)
+    while (abs(newX.pow(i) / factorial(i) / 1.0) >= eps) {
+        val value = newX.pow(i) / factorial(i)
+        n += a.pow(count) * value
         count++
         i += 2
     }
@@ -278,16 +263,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var mod = n
-    var result: Long = 0
-    while (mod > 0) {
-        result = (result + mod % 10) * 10
-        mod /= 10
-    }
-    result /= 10
-    return result == n.toLong()
-}
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя
@@ -321,42 +297,20 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var x = n
-    var result = -1
-    var count = 0
-    var factor = 0
-    when (x) {
-        in 1..3 -> result = x * x
-        in 4..15 -> {
-            count = x - 3
-            factor = 4
-            while (count > 0) {
-                when (count) {
-                    1 -> result = (factor * factor) / 10
-                    2 -> result = (factor * factor) % 10
-                    else -> count -= 2
-                }
-                factor++
-                if (result != -1) break
-            }
-        }
-        in 16..100 -> {
-            count = x - 15
-            factor = 10
-            while (count > 0) {
-                when (count) {
-                    1 -> result = (factor * factor) / 100
-                    2 -> result = ((factor * factor) % 100) / 10
-                    3 -> result = (factor * factor) % 10
-                    else -> count -= 3
-                }
-                if (result != -1) break
-                factor++
-            }
-        }
+    var length = 0
+    var count = 1
+    var result = 0
+    while (length < n) {
+        length += digitNumber(count * count)
+        result = count * count
+        count++
     }
 
-    return result
+    while (n < length) {
+        result /= 10
+        length--
+    }
+    return result % 10
 }
 
 /**
@@ -369,33 +323,19 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var x = n
-    var fact = 7
-    var factor = 12
-    var result: Long = 0
-    var count = n
-    when (x) {
-        in 1..6 -> result = fib(x).toLong()
-        in 7..16 -> {
-            count -= 6
-            while (count >= 2) {
-                fact++
-                count -= 2
-            }
-            result = if (count == 0) (fib(n = fact - 1) % 10).toLong() else (fib(fact) / 10).toLong()
-        }
-        else -> {
-            count -= 16
-            while (count > 3) {
-                factor++
-                count -= 3
-            }
-            result = when (count) {
-                1 -> (fib(factor) / 100).toLong()
-                2 -> ((fib(factor) / 10) % 10).toLong()
-                else -> (fib(factor) % 10).toLong()
-            }
-        }
+    var length = 0
+    var count = 1
+    var result = 0
+    while (length < n) {
+        length += digitNumber(fib(count))
+        result = fib(count)
+        count++
     }
-    return (result).toInt()
+
+    while (n < length) {
+        result /= 10
+        length--
+    }
+
+    return result % 10
 }
