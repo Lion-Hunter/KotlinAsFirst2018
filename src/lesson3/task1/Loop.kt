@@ -210,13 +210,12 @@ fun collatzSteps(x: Int): Int {
 fun sin(x: Double, eps: Double): Double {
     var n = x % (2 * PI)
     val newX = n
-    val a = -1.0
-    var count = 1.0
     var i = 3
-    var add = newX.pow(i) / factorial(i)
+    var add = newX
+    var value = add
     while (abs(add) >= eps) {
-        n += a.pow(count) * add
-        count++
+        add *= -1.0 * add * add / (i - 1) / i
+        n += add
         i += 2
         add = newX.pow(i) / factorial(i)
     }
@@ -310,21 +309,11 @@ fun square(n: Int, q: Int): Int {
     var length = 0
     var count = 1
     var result = 0
-    if (q == 1){
-        while (length < n) {
-            val comp = count * count
-            length += digitNumber(comp)
-            result = comp
-            count++
-        }
-    } else {
-        while (length < n) {
-            val fi = fib(count)
-            length += digitNumber(fi)
-            result = fi
-            count++
-        }
-
+    while (length < n) {
+        val diff = if (q == 0) fib(count) else count * count
+        length += digitNumber(diff)
+        result = diff
+        count++
     }
 
     while (n < length) {
