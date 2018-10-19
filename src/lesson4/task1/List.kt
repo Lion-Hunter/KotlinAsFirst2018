@@ -174,7 +174,15 @@ fun times(a: List<Double>, b: List<Double>): Double {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double = p.map { it * x.pow(p.indexOf(it)) }.sum()
+fun polynom(p: List<Double>, x: Double): Double {
+    var result = 0.0
+    var fact = 1.0
+    for (i in 0 until p.size) {
+        result += p[i] * fact
+        fact *= x
+    }
+    return result
+}
 
 /**
  * Средняя
