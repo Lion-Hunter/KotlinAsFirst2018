@@ -261,7 +261,7 @@ fun con(n: Int, base: Int, q: Int): List<String> {
             result.add(count)
             x /= base
         } else {
-            if (x % base > 9) count = toCh(x % base) else count = (x % base).toString()
+            count = if (x % base > 9) toCh(x % base) else (x % base).toString()
             result.add(count)
             x /= base
         }
@@ -374,7 +374,14 @@ fun russian(n: Int): String {
 
     if (x > 99999) {
         result += """${hundreds[x / 100000 - 1]} """
-        x %= 1000000
+        if (x % 100000 / 1000 == 0) {
+            result += when (x % 10000 / 1000) {
+                1 -> """${thForm[0]} """
+                2, 3, 4 -> """${thForm[1]} """
+                else -> """${thForm[2]} """
+            }
+        }
+        x %= 100000
     }
 
     if (x > 9999) {
@@ -382,7 +389,13 @@ fun russian(n: Int): String {
             result += """${tens[x / 10000 - 2]} """
             x %= 10000
         } else {
-            result += tenToTwenty[(x % 10000) / 1000]
+            val q = x % 10000 / 1000
+            result += """${tenToTwenty[q]} """
+            result += when (x % 10000 / 1000) {
+                1 -> """${thForm[0]} """
+                2, 3, 4 -> """${thForm[1]} """
+                else -> """${thForm[2]} """
+            }
             x %= 1000
         }
 
@@ -404,9 +417,18 @@ fun russian(n: Int): String {
     }
 
     if (x > 9) {
-        result += if (x / 10 > 1) {
-            """${tens[x / 10 - 2]} ${units[x % 10 - 1]}"""
-        } else tenToTwenty[x % 10]
+        if (x / 10 > 1) {
+            result += """${tens[x / 10 - 2]} """
+            x %= 10
+        } else {
+            result += """${tenToTwenty[x % 10]} """
+            x = 0
+        }
     }
-    return result
+
+    if (x > 0) {
+        result += """${units[x - 1]} """
+    }
+
+    return result.substring(0, result.length - 1)
 }
