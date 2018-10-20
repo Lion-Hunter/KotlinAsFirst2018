@@ -383,11 +383,7 @@ fun russian(n: Int): String {
     if (x > 99999) {
         result += """${hundreds[x / 100000 - 1]} """
         if (x % 100000 / 1000 == 0) {
-            result += when (x % 10000 / 1000) {
-                1 -> """${thForm[0]} """
-                2, 3, 4 -> """${thForm[1]} """
-                else -> """${thForm[2]} """
-            }
+            result += """${thForm[2]} """
         }
         x %= 100000
     }
@@ -399,11 +395,7 @@ fun russian(n: Int): String {
         } else {
             val q = x % 10000 / 1000
             result += """${tenToTwenty[q]} """
-            result += when (x % 10000 / 1000) {
-                1 -> """${thForm[0]} """
-                2, 3, 4 -> """${thForm[1]} """
-                else -> """${thForm[2]} """
-            }
+            result +=  """${thForm[2]} """
             x %= 1000
         }
 
