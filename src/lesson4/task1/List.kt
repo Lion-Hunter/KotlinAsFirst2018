@@ -195,7 +195,7 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    var x = 0.0
+    var x: Double
     var count = 0.0
     for (i in 0 until list.size) {
         x = list[i]
@@ -235,6 +235,7 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
+
 /**
  * Средняя
  *
@@ -259,7 +260,7 @@ fun reversToCh(x: String): Int {
 fun con(n: Int, base: Int, q: Int): List<String> {
     val result = mutableListOf<String>()
     var x = n
-    var count = String()
+    var count: String
     if (x < base) {
         return if (x > 9) listOf(toCh(x)) else listOf((x % base).toString())
     }
@@ -308,7 +309,7 @@ fun convertToString(n: Int, base: Int): String = (con(n, base, 0)).joinToString(
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var result = 0.0
-    var count = 0
+    var count: Int
     for (i in 0..digits.size - 2) {
         count = digits[i]
         result += count.toDouble() * base.toDouble().pow(digits.size - 1 - i)
@@ -358,6 +359,7 @@ fun roman(n: Int): String {
     }
     return result
 }
+
 /**
  * Очень сложная
  *
@@ -395,7 +397,7 @@ fun russian(n: Int): String {
         } else {
             val q = x % 10000 / 1000
             result += """${tenToTwenty[q]} """
-            result +=  """${thForm[2]} """
+            result += """${thForm[2]} """
             x %= 1000
         }
 
