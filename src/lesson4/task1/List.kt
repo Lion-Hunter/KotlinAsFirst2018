@@ -394,6 +394,10 @@ fun russian(n: Int): String {
         if (x / 10000 > 1) {
             result += """${tens[x / 10000 - 2]} """
             x %= 10000
+            if (x % 10000 / 1000 == 0) {
+                result += """${thForm[2]} """
+                x %= 1000
+            }
         } else {
             val q = x % 10000 / 1000
             result += """${tenToTwenty[q]} """
