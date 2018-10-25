@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
+@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence", "IMPLICIT_CAST_TO_ANY")
 
 package lesson4.task1
 
@@ -120,11 +120,8 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    var result = 0.0
-    for (i in v) {
-        result += i * i
-    }
-    return sqrt(result)
+    val list = v.map { it * it }
+    return sqrt(list.sum())
 }
 
 /**
@@ -148,7 +145,7 @@ fun mean(list: List<Double>): Double {
 fun center(list: MutableList<Double>): MutableList<Double> {
     if (list.isEmpty()) return list
     val average = mean(list)
-    for (i in 0 until list.size) list[i] -= average
+    list.replaceAll { it - average }
     return list
 }
 
@@ -161,9 +158,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Double>, b: List<Double>): Double {
     if (a.isEmpty() || b.isEmpty()) return 0.0
-    var result = 0.0
-    for (i in 0 until a.size) result += a[i] * b[i]
-    return result
+    return a.zip(b).fold(0.0) { previous, (first, second) -> previous + first * second }
 }
 
 /**
@@ -177,8 +172,8 @@ fun times(a: List<Double>, b: List<Double>): Double {
 fun polynom(p: List<Double>, x: Double): Double {
     var result = 0.0
     var fact = 1.0
-    for (i in 0 until p.size) {
-        result += p[i] * fact
+    p.forEach {
+        result += it * fact
         fact *= x
     }
     return result
@@ -195,12 +190,10 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    var x: Double
-    var count = 0.0
-    for (i in 0 until list.size) {
-        x = list[i]
-        list[i] += count
-        count += x
+    var curSum = 0.0
+    list.replaceAll {
+        curSum += it
+        curSum
     }
     return list
 }
@@ -244,50 +237,15 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 
-fun toCh(n: Int): String {
-    val x = n - 10
-    val list = listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
-            "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
-    return list[x]
-}
-
-fun reversToCh(x: String): Int {
-    val list = listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
-            "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
-    return list.indexOf(x)
-}
-
-fun con(n: Int, base: Int, q: Int): List<String> {
-    val result = mutableListOf<String>()
+fun convert(n: Int, base: Int): List<Int> {
+    val result = mutableListOf<Int>()
+    if (n == 1 || n < base) return listOf(n)
     var x = n
-    var count: String
-    if (x < base) {
-        return if (x > 9) listOf(toCh(x)) else listOf((x % base).toString())
-    }
     while (x > 0) {
-        if (q == 1) {
-            count = (x % base).toString()
-            result.add(count)
-            x /= base
-        } else {
-            count = if (x % base > 9) toCh(x % base) else (x % base).toString()
-            result.add(count)
-            x /= base
-        }
+        result.add(x % base)
+        x /= base
     }
     return result.reversed()
-}
-
-fun convert(n: Int, base: Int): List<Int> {
-    if (n == 1) return listOf(n)
-    val q = 1
-    val result = mutableListOf<Int>()
-
-    val list = con(n, base, q)
-    for (i in 0 until list.size) {
-        result.add(list[i].toInt())
-    }
-    return result
 }
 
 /**
@@ -298,7 +256,13 @@ fun convert(n: Int, base: Int): List<Int> {
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String = (con(n, base, 0)).joinToString(separator = "")
+
+
+fun convertToString(n: Int, base: Int): String {
+    val list = convert(n, base).toMutableList()
+    val result = list.map { if (it < 10) it.toString() else (('a'.toInt() + (it - 10)).toChar()).toString() }
+    return result.joinToString(separator = "")
+}
 
 /**
  * Средняя
@@ -308,15 +272,13 @@ fun convertToString(n: Int, base: Int): String = (con(n, base, 0)).joinToString(
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    var result = 0.0
-    var count: Int
-    for (i in 0..digits.size - 2) {
-        count = digits[i]
-        result += count.toDouble() * base.toDouble().pow(digits.size - 1 - i)
+    var result = 0
+    var count = 1
+    digits.reversed().forEach {
+        result += it * count
+        count *= base
     }
-
-    result += if (digits.last() == 0) 0 else digits.last()
-    return result.toInt()
+    return result
 }
 
 /**
@@ -331,7 +293,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     val list = mutableListOf<Int>()
     for (i in str) {
-        if (i.toInt() <= '9'.toInt()) list.add(i.toInt() - 48) else list.add((reversToCh(i.toString()) + 10))
+        if (i.toInt() <= '9'.toInt()) list.add(i.toInt() - 48) else list.add(i.toInt() - 'a'.toInt() + 10)
     }
     return decimal(list, base)
 }
@@ -383,57 +345,57 @@ fun russian(n: Int): String {
     var result = ""
 
     if (x > 99999) {
-        result += """${hundreds[x / 100000 - 1]} """
+        result += "${hundreds[x / 100000 - 1]} "
         if (x % 100000 / 1000 == 0) {
-            result += """${thForm[2]} """
+            result += "${thForm[2]} "
         }
         x %= 100000
     }
 
     if (x > 9999) {
         if (x / 10000 > 1) {
-            result += """${tens[x / 10000 - 2]} """
+            result += "${tens[x / 10000 - 2]} "
             x %= 10000
             if (x % 10000 / 1000 == 0) {
-                result += """${thForm[2]} """
+                result += "${thForm[2]} "
                 x %= 1000
             }
         } else {
             val q = x % 10000 / 1000
-            result += """${tenToTwenty[q]} """
-            result += """${thForm[2]} """
+            result += "${tenToTwenty[q]} "
+            result += "${thForm[2]} "
             x %= 1000
         }
 
     }
 
     if (x > 999) {
-        result += """${thNumber[x / 1000 - 1]} """
+        result += "${thNumber[x / 1000 - 1]} "
         result += when (x / 1000) {
-            1 -> """${thForm[0]} """
-            2, 3, 4 -> """${thForm[1]} """
-            else -> """${thForm[2]} """
+            1 -> "${thForm[0]} "
+            2, 3, 4 -> "${thForm[1]} "
+            else -> "${thForm[2]} "
         }
         x %= 1000
     }
 
     if (x > 99) {
-        result += """${hundreds[x / 100 - 1]} """
+        result += "${hundreds[x / 100 - 1]} "
         x %= 100
     }
 
     if (x > 9) {
         if (x / 10 > 1) {
-            result += """${tens[x / 10 - 2]} """
+            result += "${tens[x / 10 - 2]} "
             x %= 10
         } else {
-            result += """${tenToTwenty[x % 10]} """
+            result += "${tenToTwenty[x % 10]} "
             x = 0
         }
     }
 
     if (x > 0) {
-        result += """${units[x - 1]} """
+        result += "${units[x - 1]} "
     }
 
     return result.substring(0, result.length - 1)
