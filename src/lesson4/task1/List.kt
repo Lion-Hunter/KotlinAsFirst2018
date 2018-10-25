@@ -156,10 +156,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double {
-    if (a.isEmpty() || b.isEmpty()) return 0.0
-    return a.zip(b).fold(0.0) { previous, (first, second) -> previous + first * second }
-}
+fun times(a: List<Double>, b: List<Double>): Double = a.zip(b).fold(0.0)
+{ previous, (first, second) -> previous + first * second }
 
 /**
  * Средняя
@@ -258,11 +256,8 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 
 
-fun convertToString(n: Int, base: Int): String {
-    val list = convert(n, base).toMutableList()
-    val result = list.map { if (it < 10) it.toString() else (('a'.toInt() + (it - 10)).toChar()).toString() }
-    return result.joinToString(separator = "")
-}
+fun convertToString(n: Int, base: Int): String = convert(n, base).joinToString(separator = "")
+{ if (it < 10) it.toString() else (('a'.toInt() + (it - 10)).toChar()).toString() }
 
 /**
  * Средняя
