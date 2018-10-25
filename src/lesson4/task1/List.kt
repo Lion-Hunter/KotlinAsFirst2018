@@ -5,7 +5,7 @@ package lesson4.task1
 import lesson1.task1.accountInThreeYears
 import lesson1.task1.discriminant
 import lesson3.task1.isPrime
-import kotlin.math.pow
+import kotlin.math.*
 import kotlin.math.*
 import kotlin.system.measureTimeMillis
 
@@ -268,10 +268,8 @@ fun convertToString(n: Int, base: Int): String = convert(n, base).joinToString(s
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var result = 0
-    var count = 1
-    digits.reversed().forEach {
-        result += it * count
-        count *= base
+    result = digits.reversed().foldRightIndexed(0) { index, el, acc ->
+        acc + Math.pow(base.toDouble(), index.toDouble()).toInt() * el
     }
     return result
 }
