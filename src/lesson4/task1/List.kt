@@ -302,6 +302,7 @@ fun roman(n: Int): String {
         }
         count++
     }
+
     return result
 }
 
@@ -322,7 +323,6 @@ fun russian(n: Int): String {
             "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
     val thNumber = listOf("одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     val thForm = listOf("тысяча", "тысячи", "тысяч")
-
     var x = n
     var result = ""
 
