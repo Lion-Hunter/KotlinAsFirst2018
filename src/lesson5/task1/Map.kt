@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import lesson1.task1.accountInThreeYears
+import lesson4.task1.mean
 import lesson4.task1.squares
 import lesson6.task1.fromRoman
 import lesson7.task1.countSubstrings
@@ -101,7 +103,6 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val result = mutableMapOf<String, String>()
-
     mapA.forEach {
         if (it.value != mapB[it.key] && mapB[it.key] != null) result[it.key] = "${it.value}, ${mapB[it.key]}"
         else result[it.key] = it.value
@@ -121,16 +122,16 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val result = mutableMapOf<Int, List<String>>()
+    val result = mutableMapOf<Int, MutableList<String>>()
 
-    grades.forEach {
-        if (result[it.value] != null) result[it.value] = result[it.value]!! + it.key
-        else result[it.value] = listOf(it.key)
+    for ((key, value) in grades) {
+        result.getOrPut(value) { mutableListOf() }
+        result[value]?.add(key)
     }
 
-    result.forEach { result[it.key] = it.value.sortedDescending() }
+    result.forEach { it.value.sortDescending() }
 
-    return result
+    return result.mapValues { it.value.toList() }.toMap()
 }
 
 /**
@@ -160,12 +161,14 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     val map = mutableMapOf<String, MutableList<Double>>()
     val result = mutableMapOf<String, Double>()
 
-    stockPrices.forEach {
-        if (map[it.first] == null) map[it.first] = mutableListOf()
-        map[it.first]?.add(it.second)
+    for ((first, second) in stockPrices) {
+        map.getOrPut(first) { mutableListOf() }
+        map[first]?.add(second)
     }
 
-    map.forEach { result[it.key] = map[it.key]!!.sum() / map[it.key]!!.size }
+    map.forEach {
+        result[it.key] = mean(it.value)
+    }
 
     return result
 }
@@ -200,7 +203,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     if (listOfNames.isEmpty()) return null
 
     stuff.forEach {
-        if (stuff[it.key]!!.second == listOfPrices.min()) result = it.key
+        if ((stuff[it.key]!!.second == listOfPrices.min()) && (it.key in listOfNames)) result = it.key
     }
 
     return result
@@ -253,18 +256,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) = a.keys.r
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val result = mutableListOf<String>()
-    a.forEach {
-        val count = it
-        b.forEach {
-            if (count == it) result.add(it)
-        }
-    }
-
-    return result
-}
-
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b).toList()
 /**
  * Средняя
  *
@@ -293,8 +285,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
     val wrong = mutableListOf<String>()
 
     list.forEach {
-        if (result[it] == null) result[it] = 1
-        else result[it] = result[it]!! + 1
+        result.getOrPut(it) { 0 }
+        result[it] = result[it]!! + 1
     }
 
     result.forEach { if (result[it.key]!! < 2) wrong.add(it.key) }
