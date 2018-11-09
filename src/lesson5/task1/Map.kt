@@ -158,6 +158,8 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    fun average(x: List<Double>): Long = (x.sum()).toLong() / x.size
+
     val map = mutableMapOf<String, MutableList<Double>>()
     val result = mutableMapOf<String, Double>()
 
@@ -167,7 +169,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     }
 
     map.forEach {
-        result[it.key] = mean(it.value)
+        result[it.key] = (average(it.value)).toDouble()
     }
 
     return result
@@ -248,6 +250,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  * Например:
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
+ *
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) = a.keys.removeIf { a[it] == b[it] }
 
@@ -257,6 +260,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) = a.keys.r
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b).toList()
+
 /**
  * Средняя
  *
@@ -267,8 +271,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    chars.forEach { it.toLowerCase() }
-    return word.toLowerCase().all { it in chars }
+    val list = chars.map { it.toLowerCase() }
+    return word.toLowerCase().all { it in list }
 }
 
 /**
