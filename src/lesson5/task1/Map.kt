@@ -266,7 +266,10 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = word.all { it in chars }
+fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    chars.forEach { it.toLowerCase() }
+    return word.toLowerCase().all { it in chars }
+}
 
 /**
  * Средняя
@@ -306,14 +309,12 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    var result = false
-    words.forEach {
-        val count1 = it
-        words.forEach {
-            val count2 = it
-            if (count1.all { it in count2 } && count2.all { it in count1 } && count1 != count2) result = true
-        }
+    val result = false
+    for (i in words) {
+        val list = words.toMutableList() - i
+        for (j in list) if ((i == j) || (i == j.reversed())) return true
     }
+
     return result
 }
 

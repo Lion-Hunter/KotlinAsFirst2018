@@ -125,7 +125,7 @@ fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
  */
 fun mean(list: List<Double>): Double {
     if (list.isEmpty()) return 0.0
-    return list.sum() / list.size
+    return ((list.sum()).toLong() / (list.size).toLong()).toDouble()
 }
 
 /**
