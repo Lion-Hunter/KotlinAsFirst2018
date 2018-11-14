@@ -235,7 +235,25 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val result = mutableMapOf<String, MutableSet<String>>()
+    for ((first, second) in friends) {
+        result[first] = second.toMutableSet()
+        for (person in second) if (person !in result) result[person] = mutableSetOf()
+    }
+    for ((first, second) in result) {
+        val friendSet = mutableSetOf<String>()
+        while (second != friendSet) {
+            for (person in second - friendSet) {
+                if (person in friends) second += friends[person]!! - first
+                friendSet += person
+            }
+        }
+        result[first] = second
+    }
+
+    return result
+}
 
 /**
  * Простая
@@ -360,4 +378,30 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    var result = emptySet<String>()
+    val mapOfTreasures = treasures.filterValues { it.first <= capacity }
+    var maxPrice = 0
+    var weight = 0
+    var intermediateWeight = Int.MAX_VALUE
+    var treasure = String()
+
+    if (mapOfTreasures.isEmpty()) return emptySet()
+
+    for (available in 1..capacity) {
+        for ((item, value) in mapOfTreasures) {
+            if (weight + value.first > available) continue
+
+            if ((maxPrice < value.second) || (maxPrice == value.second && value.first < intermediateWeight)) {
+                maxPrice = value.second
+                weight += value.first
+                treasure = item
+                intermediateWeight = value.first
+            }
+        }
+
+        if (treasure != "") result += treasure
+    }
+
+    return result
+}
