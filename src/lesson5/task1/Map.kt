@@ -2,13 +2,6 @@
 
 package lesson5.task1
 
-import lesson1.task1.accountInThreeYears
-import lesson4.task1.mean
-import lesson4.task1.squares
-import lesson6.task1.fromRoman
-import lesson7.task1.countSubstrings
-import kotlin.math.absoluteValue
-
 /**
  * Пример
  *
@@ -158,7 +151,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    fun average(x: List<Double>): Long = (x.sum()).toLong() / x.size
+    fun average(x: List<Double>) = (x.sum()).toLong() / x.size
 
     val map = mutableMapOf<String, MutableList<Double>>()
     val result = mutableMapOf<String, Double>()
@@ -196,16 +189,17 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var result = ""
 
     stuff.forEach {
-        if (stuff[it.key]!!.first == kind) {
+        if (it.value.first == kind) {
             listOfNames.add(it.key)
-            listOfPrices.add(stuff[it.key]!!.second)
+            listOfPrices.add(it.value.second)
         }
     }
 
     if (listOfNames.isEmpty()) return null
 
     stuff.forEach {
-        if ((stuff[it.key]!!.second == listOfPrices.min()) && (it.key in listOfNames)) result = it.key
+        if ((it.value.second == listOfPrices.min()) && (it.key in listOfNames))
+            result = it.key
     }
 
     return result
@@ -289,8 +283,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val list = chars.map { it.toLowerCase() }
-    return word.toLowerCase().all { it in list }
+    val set = chars.toSet().map { it.toLowerCase() }
+    return word.toLowerCase().all { it in set }
 }
 
 /**
@@ -314,7 +308,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
         result[it] = result[it]!! + 1
     }
 
-    result.forEach { if (result[it.key]!! < 2) wrong.add(it.key) }
+    result.forEach { if (it.value < 2) wrong.add(it.key) }
 
     wrong.forEach { result.remove(it) }
 
@@ -333,8 +327,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     val result = false
     for (i in words) {
-        val list = words.toMutableList() - i
-        for (j in list) if ((i == j) || (i == j.reversed())) return true
+        val set = (words.toMutableList() - i).toSet()
+        for (j in set) if ((i == j) || (i == j.reversed())) return true
     }
 
     return result
@@ -380,7 +374,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var result = emptySet<String>()
-    val mapOfTreasures = treasures.filterValues { it.first <= capacity }
+    val mapOfTreasures = treasures.filterValues { it.first <= capacity }.toMutableMap()
     var maxPrice = 0
     var weight = 0
     var intermediateWeight = Int.MAX_VALUE
@@ -389,6 +383,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     if (mapOfTreasures.isEmpty()) return emptySet()
 
     for (available in 1..capacity) {
+        intermediateWeight = Int.MAX_VALUE
         for ((item, value) in mapOfTreasures) {
             if (weight + value.first > available) continue
 
@@ -400,6 +395,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             }
         }
 
+        mapOfTreasures.remove(treasure)
         if (treasure != "") result += treasure
     }
 
