@@ -151,8 +151,6 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    fun average(x: List<Double>) = (x.sum()).toLong() / x.size
-
     val map = mutableMapOf<String, MutableList<Double>>()
     val result = mutableMapOf<String, Double>()
 
@@ -161,8 +159,11 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
         map[first]?.add(second)
     }
 
-    map.forEach {
-        result[it.key] = (average(it.value)).toDouble()
+    for ((i, j) in map) {
+        for (num in j) {
+            result.getOrPut(i) { 0.0 }
+            result[i] = result[i]!! + num / j.size
+        }
     }
 
     return result
@@ -360,8 +361,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         secondNum = number - x
 
         val second = list.subList(first + 1, list.size).indexOf(secondNum)
-
-        if (second != -1) return first to (second + 1)
+        val size = list.subList(0, first + 1).size
+        if (second != -1) return first to (second + size)
     }
 
     return -1 to -1
@@ -386,7 +387,32 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+/* {
+    var weight = 0
+    var totalWeight = 0
+    val mapOfTreasures = treasures.filterValues { it.first <= capacity }.toMutableMap()
+    if (mapOfTreasures.isEmpty()) return emptySet()
+    var maxPrice = 0
+    var bagsMap = mutableMapOf<Int, Pair<Set<String>, Int>>()
+
+    for (available in 1..capacity) {
+        for ((item, value) in mapOfTreasures) {
+            if (value.first > available) continue
+            weight = available - value.first
+            bagsMap.getOrPut(weight) { Pair(emptySet(), 0) }
+            val currentPrice = bagsMap[weight]!!.second + value.second
+            if ((maxPrice < currentPrice) && (item !in bagsMap[weight]!!.first)) {
+                maxPrice = currentPrice
+                totalWeight += available
+            }
+        }
+    }
+
+}
+*/
+
+/*
     var result = emptySet<String>()
     val mapOfTreasures = treasures.filterValues { it.first <= capacity }.toMutableMap()
     var maxPrice = 0
@@ -415,3 +441,4 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
 
     return result
 }
+*/
