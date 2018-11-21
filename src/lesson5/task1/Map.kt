@@ -388,32 +388,34 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    var weight: Int
-    var totalWeight = 0
-    val mapOfTreasures = treasures.filterValues { it.first <= capacity }.toMutableMap()
+    val mapOfTreasures = treasures.filterValues { it.first <= capacity }
     if (mapOfTreasures.isEmpty()) return emptySet()
-    var maxPrice: Int
-    val bagsList = mutableListOf<Set<String>>(emptySet())
-    val pricesList = mutableListOf<Int>()
-    var treasure = ""
+    val result = mutableListOf(emptySet<String>())
+    val pricesList = mutableListOf(0)
 
     for (available in 1..capacity) {
-        maxPrice = 0
+        var maxPrice = pricesList[available - 1]
+        var treasure = emptySet<String>()
+        var position = available - 1
+
         for ((item, value) in mapOfTreasures) {
-            if (value.first <= available) {
-                weight = available - value.first
-                var currentPrice = pricesList[weight]
-                if (item !in bagsList[weight]) currentPrice += value.second
-                if (maxPrice < currentPrice) {
-                    totalWeight = weight
-                    maxPrice = currentPrice
-                    treasure = item
-                }
+            if (value.first > available) continue
+
+            val remainder = available - value.first
+            var curPrice = pricesList[remainder]
+
+            if (item !in result[remainder]) curPrice += value.second
+
+            if (curPrice > maxPrice) {
+                maxPrice = curPrice
+                treasure = setOf(item)
+                position = remainder
             }
         }
-        if (treasure != "") bagsList += bagsList[totalWeight] + treasure
+
         pricesList += maxPrice
+        result += result[position] + treasure
     }
 
-    return bagsList[capacity - 2]
+    return result.last()
 }
