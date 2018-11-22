@@ -369,9 +369,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         x = list[first]
         secondNum = number - x
 
-        val second = list.subList(first + 1, list.size).indexOf(secondNum)
-        val size = list.subList(0, first + 1).size
-        if (second != -1) return first to (second + size)
+        if (secondNum in set.subList(first + 1, set.size)) return first to set.indexOf(secondNum)
     }
 
     return -1 to -1
