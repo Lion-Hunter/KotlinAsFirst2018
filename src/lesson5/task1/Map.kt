@@ -361,16 +361,15 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val set = list.toSet().filter { it <= number }
-    var x: Int
-    var secondNum: Int
+    val map = mutableMapOf<Int, Int>()
+    var second: Int
 
-    for (first in 0 until set.size) {
-        x = list[first]
-        secondNum = number - x
+    for (first in 0 until list.size) {
+        second = number - list[first]
 
-        if (secondNum in set.subList(first + 1, set.size))
-            return first to set.indexOf(secondNum)
+        if (second in map)
+            return map[second]!! to first
+        else map[list[first]] = first
     }
 
     return -1 to -1
