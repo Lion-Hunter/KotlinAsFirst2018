@@ -86,15 +86,15 @@ class Tests {
     @Test
     @Tag("Hard")
     fun plusMinus() {
-        assertEquals(0, plusMinus("0"))
-        assertEquals(4, plusMinus("2 + 2"))
-        assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
-        assertEquals(-1, plusMinus("0 - 1"))
         assertThrows(IllegalArgumentException::class.java) { plusMinus("+2") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }
+        assertEquals(0, plusMinus("0"))
+        assertEquals(4, plusMinus("2 + 2"))
+        assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
+        assertEquals(-1, plusMinus("0 - 1"))
     }
 
     @Test
@@ -110,8 +110,9 @@ class Tests {
     @Tag("Hard")
     fun mostExpensive() {
         assertEquals("", mostExpensive(""))
-        assertEquals("Курица", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты 89.9"))
         assertEquals("Вино", mostExpensive("Вино 255.0"))
+        assertEquals("Курица", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты 89.9"))
+
     }
 
     @Test
