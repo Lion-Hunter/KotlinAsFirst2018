@@ -96,14 +96,20 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val datesList = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
-            "июля", "августа", "сентября", "октября", "ноября", "декабря")
+    val dateList = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября",
+            "октября", "ноября", "декабря")
     val date = digital.split(".")
+    if (date.size != 3) return ""
 
-    if ((date.size != 3) || (date[1].toInt() !in 1..12)
-            || (daysInMonth(date[1].toInt(), date[2].toInt()) < date[0].toInt())) return ""
+    if ((date[1].toIntOrNull() ?: return "") == 0 || (date[1].toIntOrNull() ?: return "") > 12) return ""
 
-    return String.format("%d.%s.%s", date[0], datesList[date[1].toInt() - 1], date[2].toInt())
+    return try {
+        if (daysInMonth(date[1].toInt(), date[2].toInt()) >= date[0].toInt())
+            String.format("%d %s %s", date[0].toInt(), dateList[date[1].toInt() - 1], date[2].toInt())
+        else ""
+    } catch (e: NumberFormatException) {
+        ""
+    }
 }
 
 /**
@@ -135,15 +141,14 @@ fun flattenPhoneNumber(phone: String): String =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val str = jumps.replace(Regex("""\s%|\s-"""), "")
-    val results = str.split(" ")
+    val str = jumps.replace(Regex("""%\s?|-\s?"""), "").trim()
+    val str1 = str.replace((Regex("""\s\s+""")), " ")
+    val results = str1.split(" ")
 
-    for (result in results) {
+    for (result in results)
         if (!result.contains(Regex("""[\d]"""))) return -1
-        result.toInt()
-    }
 
-    return results.max()!!.toInt()
+    return results.map { it.toInt() }.max()!!.toInt()
 }
 
 /**
@@ -157,11 +162,11 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!jumps.contains(Regex("""[\d\s-%]"""))) return -1
     val jump = jumps.replace(Regex("""\d+\s%+-?|\d\s-"""), "")
     var results = jump.replace(Regex("""\s%?\+"""), "")
     results = results.replace(Regex("""\s+"""), " ")
     results = results.replace(Regex("""\s$"""), "")
+    if (!results.contains(Regex("""[\d\s-%]"""))) return -1
     val parse = results.split(" ")
 
     return parse.map { it.toInt() }.max()!!.toInt()
@@ -178,7 +183,7 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     if ((expression.contains(Regex("""[^\s\d-+]"""))) || (expression.isEmpty())
-            || (expression.contains(Regex("""\+\s\+|-\s-|\+\s-|-\s\+|\d+\s\s\d+|^\+\s?\d|^-\s?\d"""))))
+            || (expression.contains(Regex("""\+\s\+|-\s-|\+\s-|-\s\+|\d+\s\s\d+|^\+\s?\d|^-\s?\d|^\s$"""))))
         throw IllegalArgumentException()
 
     var sum = 0
@@ -239,11 +244,12 @@ fun mostExpensive(description: String): String {
     var result = ""
 
     for (i in 0 until list.size) {
-        if (list[i].contains(Regex("""\d.?\d?""")) && (i % 2 != 0)) map[list[i - 1]] = list[i].toDouble()
+        if (list[i].contains(Regex("""\d+.?\d?""")) && (i % 2 != 0))
+            map[list[i - 1]] = list[i].toDouble()
     }
 
     map.forEach {
-        if (it.value > max) {
+        if (it.value >= max) {
             result = it.key
             max = it.value
         }
@@ -265,11 +271,22 @@ fun mostExpensive(description: String): String {
  */
 fun fromRoman(roman: String): Int {
     if (roman.contains(Regex("""[^IVXLCDM]"""))) return -1
+    val symbol = mapOf("M" to 1000, "D" to 500, "C" to 100, "L" to 50, "X" to 10, "V" to 5, "I" to 1)
+    val twoSymbols = mapOf("CM" to 200, "CD" to 200, "XC" to 20, "XL" to 20, "IX" to 2, "IV" to 2)
+    var result = 0
+    roman.forEach { result += symbol[it.toString()]!! }
+
+    twoSymbols.keys.forEach { if (it in roman) result -= twoSymbols[it]!! }
+
+    return result
+}
+
+/*{
+    if (roman.contains(Regex("""[^IVXLCDM]"""))) return -1
     val map = mapOf("M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
             "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1)
-    var result = 0
     var count = 0
-    var list = roman.split("")
+    val list = roman.split("")
 
     for (i in 0 until list.size) {
         if (count == 2) {
@@ -284,7 +301,7 @@ fun fromRoman(roman: String): Int {
     }
 
     return result
-}
+}*/
 
 /**
  * Очень сложная
