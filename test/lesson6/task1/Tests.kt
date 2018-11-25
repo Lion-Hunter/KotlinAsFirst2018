@@ -109,7 +109,7 @@ class Tests {
     @Test
     @Tag("Hard")
     fun mostExpensive() {
-        assertEquals("", mostExpensive(""))
+        assertEquals("", mostExpensive("+ 2440823.58; R 0.01; :cEIQ%B3:y<kK5y=JzF%?[4G@@q`nI8/^[}FWNrbg)%(QPLD^o'3Ec,j%I9X1o4%[`WW/`Ec2'kh4bXr9_d7t\\\\gpEKI%=VQ'MpzSj!Nk?%mBB%'^9Tf'=a'W-lF5Ie`fM>'2L3+5E8B\$.}-X)PGe(\\\"92&%olZ%H%%hET 0.01; } 15451967.7; 83[t/%K+KNJ%y8CUUE< 21474836.47; z 17067578.44; S%R`?\$\\\\'[bGp|8 0.01; { 21474836.47; +{5%=8#)u7s)A 19517705.11; 1C-^yQ)b%*TTT_\\\\O\\\\]<Y|~4SJ_M!P\\\\n@=t9r!r+oSY*tawjb+U6\\\"0y4Y/U7\$+SW~@MM@<\\\\k#QA%qd<JmyNC>IQxhis:yS#2Vm0%dN{ZNIV%#j%>|BNF\\\"d%uv.lD%C|EEu?L>>TK_8<E,a^L2S&oS~,CTy4 0; }(I@qbVz7%K 18358630.55; :R\\\\{U+Rof<Y(4%_d#>L@ 6696222.11; S3%:9m!$,MZ%~c)eB<( 19029791.93"))
         assertEquals("Вино", mostExpensive("Вино 255.0"))
         assertEquals("Курица", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты 89.9"))
 

@@ -163,7 +163,7 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     val jump = jumps.replace(Regex("""\d+\s%+-?|\d\s-"""), "")
-    var results = jump.replace(Regex("""\s%?\+"""), "")
+    var results = jump.replace(Regex("""\s%?\+|\s%+\+"""), "")
     results = results.replace(Regex("""\s+"""), " ")
     results = results.replace(Regex("""\s$"""), "")
     if (!results.contains(Regex("""[\d\s-%]"""))) return -1
@@ -235,7 +235,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (description.isEmpty() || description.contains(Regex("""[^\d\s.;а-яА-Я]"""))) return ""
+    if (description.isEmpty() || description.contains(Regex("""^(\w+\s\d+\.?(\d+)*\s)*$"""))) return ""
 
     val map = mutableMapOf<String, Double>()
     val products = description.replace(Regex(""";"""), "")
@@ -278,30 +278,9 @@ fun fromRoman(roman: String): Int {
 
     twoSymbols.keys.forEach { if (it in roman) result -= twoSymbols[it]!! }
 
-    return result
+    return if (result != 0) result
+    else -1
 }
-
-/*{
-    if (roman.contains(Regex("""[^IVXLCDM]"""))) return -1
-    val map = mapOf("M" to 1000, "CM" to 900, "D" to 500, "CD" to 400, "C" to 100, "XC" to 90,
-            "L" to 50, "XL" to 40, "X" to 10, "IX" to 9, "V" to 5, "IV" to 4, "I" to 1)
-    var count = 0
-    val list = roman.split("")
-
-    for (i in 0 until list.size) {
-        if (count == 2) {
-            count = 0
-            continue
-        }
-
-        result += if ((list[i] + list[i + 1]) !in map.keys) {
-            map[list[i]]!!
-        } else map[list.subList(i, i + 1).toString()]!!
-        count = 2
-    }
-
-    return result
-}*/
 
 /**
  * Очень сложная
