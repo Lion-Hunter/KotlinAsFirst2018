@@ -54,8 +54,23 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val resalt = mutableMapOf<String, Int>()
+    val reader = File(inputName).bufferedReader().readLines().joinToString().toLowerCase()
 
+    for (string in substrings) {
+        val i = 0
+        var count = 0
+        var entering = Regex(string.toLowerCase()).find(reader, 0)
+        while (entering != null && i <= reader.length) {
+            count++
+            entering = Regex(string.toLowerCase()).find(reader, entering.range.first + 1)
+        }
+        resalt[string] = count
+    }
+
+    return resalt
+}
 
 /**
  * Средняя
@@ -71,7 +86,6 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
 }
 
 /**
@@ -92,7 +106,21 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var maxLength = 0
+    val out = File(outputName).bufferedWriter()
+
+    for (line1 in File(inputName).readLines())
+        if (line1.trim().length > maxLength) maxLength = line1.trim().length
+
+    for (line2 in File(inputName).readLines()) {
+        if (maxLength > line2.trim().length)
+            out.write(" ".repeat((maxLength + line2.trim().length) / 2 - line2.trim().length))
+
+        out.write(line2.trim())
+        out.newLine()
+    }
+
+    out.close()
 }
 
 /**
