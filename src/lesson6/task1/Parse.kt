@@ -162,7 +162,7 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val jump = jumps.replace(Regex("""\d+\s%+-?|\d\s-"""), "")
+    val jump = jumps.replace(Regex("""\d+\s%+-|\d\s-|\d+\s%+"""), "")
     var results = jump.replace(Regex("""\s%?\+|\s%+\+"""), "")
     results = results.replace(Regex("""\s+"""), " ")
     results = results.replace(Regex("""\s$"""), "")
@@ -182,7 +182,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if ((expression.contains(Regex("""[^\s\d-+]"""))) || (expression.isEmpty())
+    if ((expression.contains(Regex("""[^\s\d-+]"""))) || (expression.isEmpty() || !expression.contains(Regex("""^\d""")))
             || (expression.contains(Regex("""\+\s\+|-\s-|\+\s-|-\s\+|\d+\s\s\d+|^\+\s?\d|^-\s?\d|^\s$"""))))
         throw IllegalArgumentException()
 
