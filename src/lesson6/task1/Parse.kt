@@ -60,7 +60,6 @@ fun main(args: Array<String>) {
     }
 }
 
-
 /**
  * Средняя
  *
@@ -72,17 +71,21 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+
+val datesList = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
+        "июля", "августа", "сентября", "октября", "ноября", "декабря")
+
 fun dateStrToDigit(str: String): String {
-    val datesList = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
-            "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val date = str.split(" ")
+    val first = date[0].toInt()
 
     if ((date.size != 3) || (date[1] !in datesList)
-            || (daysInMonth(datesList.indexOf(date[1]) + 1, date[2].toInt()) < date[0].toInt()))
+            || date[0].contains(Regex("""[^\d]""")) || date[2].contains(Regex("""[^\d]"""))
+            || (daysInMonth(datesList.indexOf(date[1]) + 1, date[2].toInt()) < first))
         return ""
     val numOfMonth = datesList.indexOf(date[1]) + 1
 
-    return String.format("%02d.%02d.%s", date[0].toInt(), numOfMonth, date[2])
+    return String.format("%02d.%02d.%s", first, numOfMonth, date[2])
 }
 
 /**
@@ -95,17 +98,20 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
+
 fun dateDigitToStr(digital: String): String {
-    val dateList = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября",
-            "октября", "ноября", "декабря")
     val date = digital.split(".")
     if (date.size != 3) return ""
+    val x = date[1].toIntOrNull()
+    val first = date[0].toInt()
+    val second = date[1].toInt()
+    val third = date[2].toInt()
 
-    if ((date[1].toIntOrNull() ?: return "") == 0 || (date[1].toIntOrNull() ?: return "") > 12) return ""
+    if ((x ?: return "") == 0 || x > 12) return ""
 
     return try {
-        if (daysInMonth(date[1].toInt(), date[2].toInt()) >= date[0].toInt())
-            String.format("%d %s %s", date[0].toInt(), dateList[date[1].toInt() - 1], date[2].toInt())
+        if (daysInMonth(second, third) >= first)
+            String.format("%d %s %s", first, datesList[second - 1], third)
         else ""
     } catch (e: NumberFormatException) {
         ""
@@ -162,14 +168,14 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val jump = jumps.replace(Regex("""\d+\s%+-|\d\s-|\d+\s%+"""), "")
+    val jump = jumps.replace(Regex("""\d+\s%+-|\d\s-|\d+\s%+\s+|\d+\s%+$"""), "")
     var results = jump.replace(Regex("""\s%?\+|\s%+\+"""), "")
     results = results.replace(Regex("""\s+"""), " ")
-    results = results.replace(Regex("""\s$"""), "")
+    results = results.replace(Regex("""\s*$"""), "")
     if (!results.contains(Regex("""[\d\s-%]"""))) return -1
     val parse = results.split(" ")
 
-    return parse.map { it.toInt() }.max()!!.toInt()
+    return parse.map { it.toInt() }.max()!!
 }
 
 /**
@@ -193,7 +199,7 @@ fun plusMinus(expression: String): Int {
 
     for (result in results) {
         when {
-            result[0].toInt() in 48..57 -> sum += result.toInt()
+            result[0] in '0'..'9' -> sum += result.toInt()
             result[0] == '+' -> sum += result.substring(1, result.length).toInt()
             else -> sum -= result.substring(1, result.length).toInt()
         }
