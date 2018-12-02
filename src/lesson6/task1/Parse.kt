@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import lesson5.task1.findCheapestStuff
 import kotlin.math.max
 
 /**
@@ -167,8 +168,7 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val jump = jumps.replace(Regex("""\d+\s%+-|\d\s-|\d+\s%+\s+|\d+\s%+-?$"""), "")
     var results = jump.replace(Regex("""\s%?\+|\s%+\+"""), "")
-    results = results.replace(Regex("""\s+"""), " ")
-    results = results.replace(Regex("""^\s*|\s*$"""), "")
+    results = results.replace(Regex("""\s+"""), " ").trim()
     if (!results.contains(Regex("""[\d\s-%]"""))) return -1
     val parse = results.split(" ")
 
@@ -321,4 +321,58 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    var count1 = 0
+    var count2 = 0
+    for (i in commands)
+        when (i) {
+            '[' -> count1 += 1
+            ']' -> count2 += 1
+        }
+
+    if (commands.contains(Regex("""[^\d><\[\]+\s-]""")) || count1 != count2) throw IllegalArgumentException()
+
+    val open = mutableListOf<Int>()
+    val pairs = mutableListOf<Pair<Int, Int>>()
+    for (bracket in 0 until commands.length) {
+        when (commands[bracket]) {
+            '[' -> open += bracket
+            ']' -> {
+                pairs += open.last() to bracket
+                open -= open.last()
+            }
+        }
+    }
+
+    val conveyor = mutableListOf<Int>()
+    for (cell in 0 until cells)
+        conveyor += 0
+
+    var pos = cells / 2
+    var operations = 0
+    var num = 0
+    while (num in 0 until commands.length && operations < limit) {
+        operations += 1
+        when (commands[num]) {
+            '+' -> conveyor[pos]++
+            '-' -> conveyor[pos]--
+            '<' -> {
+                pos -= 1
+                if (pos !in 0..(cells - 1))
+                    throw IllegalStateException()
+            }
+            '>' -> {
+                pos += 1
+                if (pos !in 0..(cells - 1))
+                    throw java.lang.IllegalStateException()
+            }
+            '[' -> if (conveyor[pos] == 0)
+                num = pairs.find { it.first == num }!!.second
+            ']' -> if (conveyor[pos] != 0)
+                num = pairs.find { it.second == num }!!.first
+        }
+
+        num++
+    }
+    return conveyor
+}
