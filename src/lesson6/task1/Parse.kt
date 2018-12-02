@@ -329,17 +329,20 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '[' -> count1 += 1
             ']' -> count2 += 1
         }
-
     if (commands.contains(Regex("""[^\d><\[\]+\s-]""")) || count1 != count2) throw IllegalArgumentException()
 
-    val open = mutableListOf<Int>()
+
+    val open = emptyList<Int>().toMutableList()
     val pairs = mutableListOf<Pair<Int, Int>>()
     for (bracket in 0 until commands.length) {
         when (commands[bracket]) {
             '[' -> open += bracket
             ']' -> {
-                pairs += open.last() to bracket
-                open -= open.last()
+                if (open.isEmpty()) throw IllegalArgumentException()
+                else {
+                    pairs += open.last() to bracket
+                    open -= open.last()
+                }
             }
         }
     }
