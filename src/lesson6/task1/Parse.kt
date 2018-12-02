@@ -77,15 +77,17 @@ val datesList = listOf("января", "февраля", "марта", "апре
 
 fun dateStrToDigit(str: String): String {
     val date = str.split(" ")
-    val first = date[0].toInt()
-
     if ((date.size != 3) || (date[1] !in datesList)
-            || date[0].contains(Regex("""[^\d]""")) || date[2].contains(Regex("""[^\d]"""))
-            || (daysInMonth(datesList.indexOf(date[1]) + 1, date[2].toInt()) < first))
+            || date[0].contains(Regex("""[^\d]""")) || date[2].contains(Regex("""[^\d]""")))
+        return ""
+
+    val number = date[0].toInt()
+
+    if (daysInMonth(datesList.indexOf(date[1]) + 1, date[2].toInt()) < number)
         return ""
     val numOfMonth = datesList.indexOf(date[1]) + 1
 
-    return String.format("%02d.%02d.%s", first, numOfMonth, date[2])
+    return String.format("%02d.%02d.%s", number, numOfMonth, date[2])
 }
 
 /**
@@ -99,23 +101,18 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 
-fun dateDigitToStr(digital: String): String {
+fun dateDigitToStr(digital: String): String = try {
     val date = digital.split(".")
-    if (date.size != 3) return ""
-    val x = date[1].toIntOrNull()
     val first = date[0].toInt()
     val second = date[1].toInt()
     val third = date[2].toInt()
 
-    if ((x ?: return "") == 0 || x > 12) return ""
-
-    return try {
-        if (daysInMonth(second, third) >= first)
-            String.format("%d %s %s", first, datesList[second - 1], third)
-        else ""
-    } catch (e: NumberFormatException) {
-        ""
-    }
+    if ((second !in 1..12) || digital.contains(Regex("""[^\d.]"""))
+            || date.size != 3 || daysInMonth(second, third) < first) throw NumberFormatException()
+    else
+        String.format("%d %s %s", first, datesList[second - 1], date[2])
+} catch (e: NumberFormatException) {
+    ""
 }
 
 /**
@@ -168,10 +165,10 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val jump = jumps.replace(Regex("""\d+\s%+-|\d\s-|\d+\s%+\s+|\d+\s%+$"""), "")
+    val jump = jumps.replace(Regex("""\d+\s%+-|\d\s-|\d+\s%+\s+|\d+\s%+-?$"""), "")
     var results = jump.replace(Regex("""\s%?\+|\s%+\+"""), "")
     results = results.replace(Regex("""\s+"""), " ")
-    results = results.replace(Regex("""\s*$"""), "")
+    results = results.replace(Regex("""^\s*|\s*$"""), "")
     if (!results.contains(Regex("""[\d\s-%]"""))) return -1
     val parse = results.split(" ")
 
