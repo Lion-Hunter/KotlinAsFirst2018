@@ -109,6 +109,8 @@ fun sibilants(inputName: String, outputName: String) {
                 'я' -> sym = 'а'
                 'Ю' -> sym = 'У'
                 'ю' -> sym = 'у'
+                'Ы' -> sym = 'И'
+                'ы' -> sym = 'и'
             }
         }
 
@@ -246,7 +248,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     if (reader.isEmpty()) return emptyMap()
     val wordsMap = mutableMapOf<String, Int>()
     val string = reader.replace(Regex("""[^a-zа-яё]+"""), " ")
-    val words = string.split(" ")
+    val words = string.split(Regex("""\s+"""))
     val result = mutableMapOf<String, Int>()
 
     if (words.size <= 20) {
@@ -355,19 +357,22 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
         var length = 0
 
         for (i in line) {
-            if (i in symbols)
+            if (i in symbols) {
+                length = 0
                 break
-            else {
-                length++
+            } else {
+                length += 1
                 symbols += i
             }
         }
 
-        if (length == line.length)
+        if (length == line.length) {
             wordsMap[read] = length
 
-        if (length > maxLength)
-            maxLength = length
+            if (length > maxLength)
+                maxLength = length
+        }
+
     }
 
     wordsMap.forEach {
