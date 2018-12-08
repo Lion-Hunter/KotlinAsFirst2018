@@ -3,8 +3,6 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import lesson5.task1.findCheapestStuff
-import kotlin.math.max
 
 /**
  * Пример
@@ -152,7 +150,7 @@ fun bestLongJump(jumps: String): Int {
     for (result in results)
         if (!result.contains(Regex("""[\d]"""))) return -1
 
-    return results.map { it.toInt() }.max()!!.toInt()
+    return results.map { it.toInt() }.max()!!
 }
 
 /**
@@ -166,6 +164,9 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
+    if (!jumps.contains(Regex("""[+]""")))
+        return -1
+
     val jump = jumps.replace(Regex("""\d+\s%+-|\d\s-|\d+\s%+\s+|\d+\s%+-?$"""), "")
     var results = jump.replace(Regex("""\s%?\+|\s%+\+"""), "")
     results = results.replace(Regex("""\s+"""), " ").trim()
