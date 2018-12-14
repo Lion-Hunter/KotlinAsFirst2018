@@ -143,9 +143,9 @@ fun flattenPhoneNumber(phone: String): String =
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val str = jumps.replace(Regex("""%\s?|-\s?"""), "").trim()
-    val str1 = str.replace((Regex("""\s\s+""")), " ")
-    val results = str1.split(" ")
+    val jumpsStr = jumps.replace(Regex("""%\s?|-\s?"""), "").trim()
+    val string = jumpsStr.replace((Regex("""\s\s+""")), " ")
+    val results = string.split(" ")
 
     for (result in results)
         if (!result.contains(Regex("""[\d]"""))) return -1
@@ -186,8 +186,10 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if ((expression.contains(Regex("""[^\s\d-+]"""))) || (expression.isEmpty() || !expression.contains(Regex("""^\d""")))
-            || (expression.contains(Regex("""\+\s\+|-\s-|\+\s-|-\s\+|\d+\s\s\d+|^\+\s?\d|^-\s?\d|^\s$"""))))
+    if ((expression.contains(Regex("""[^\s\d-+]""")))
+            || (expression.isEmpty() || !expression.contains(Regex("""^\d""")))
+            || (expression
+                    .contains(Regex("""\+\s\+|-\s-|\+\s-|-\s\+|\d+\s\s\d+|^\+\s?\d|^-\s?\d|^\s$"""))))
         throw IllegalArgumentException()
 
     var sum = 0
