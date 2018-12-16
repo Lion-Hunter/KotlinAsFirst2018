@@ -247,7 +247,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     val reader = File(inputName).bufferedReader().readLines().joinToString().toLowerCase()
     if (reader.isEmpty()) return emptyMap()
     val wordsMap = mutableMapOf<String, Int>()
-    val string = reader.replace(Regex("""[^a-zа-яё]+"""), " ")
+    val string = reader.replace(Regex("""[^a-zа-яё]+"""), " ").trim()
     val words = string.split(Regex("""\s+"""))
     val result = mutableMapOf<String, Int>()
 
@@ -353,7 +353,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
 
     for (read in reader) {
         val line = read.toLowerCase()
-        val symbols = mutableListOf<Char>()
+        val symbols = emptyList<Char>().toMutableList()
         var length = 0
 
         for (i in line) {
@@ -366,9 +366,9 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
             }
         }
 
-        if (length == line.length) {
+        if (length == read.length) {
             wordsMap[read] = length
-
+            result += read
             if (length > maxLength)
                 maxLength = length
         }
@@ -376,8 +376,8 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     }
 
     wordsMap.forEach {
-        if (it.value == maxLength)
-            result += it.key
+        if (it.value != maxLength)
+            result.remove(it.key)
     }
 
     writer.write(result.joinToString(separator = ", "))
@@ -440,7 +440,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     for (line in reader) {
 
         if (line.isEmpty()) {
-            writer.write("</p><p>")
+            if (p != 0) writer.write("</p><p>")
+            else writer.write("<p>")
             p = 1
             continue
         }
