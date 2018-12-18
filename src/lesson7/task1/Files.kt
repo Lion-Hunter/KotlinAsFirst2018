@@ -451,99 +451,104 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var p = 0
     var count = 0
 
-    writer.write("<html><body>")
-    for (line in reader) {
+    if (reader.isEmpty()) {
+        writer.write("<html><body></body></html>")
+        writer.close()
+    } else {
+        writer.write("<html><body>")
+        for (line in reader) {
 
-        if (line.isEmpty()) {
-            if (p != 0) writer.write("</p><p>")
-            else writer.write("<p>")
-            p = 1
-            continue
-        }
-
-        if (p == 0) {
-            writer.write("<p>")
-            p = 1
-        }
-
-        loop@ for (sym in 0 until line.length) {
-            var check = 0
-            when (line[sym]) {
-                '*' -> {
-                    count += 1
-                    if (line[sym + 1] == '*') {
-                        check += 1
-                        continue@loop
-                    } else if (count == 3) {
-                        if (i == 0 && b == 0) {
-                            writer.write("<b><i>")
-                            b = 1
-                            i = 2
-                        } else {
-                            if (b > i)
-                                writer.write("</b></i>")
-                            else
-                                writer.write("</i></b>")
-                            b = 0
-                            i = 0
-                        }
-                    } else if (line[sym + 1] != '*' && count == 2) {
-                        b = if (b == 0) {
-                            writer.write("<b>")
-                            if (i == 1) 2
-                            else {
-                                1
-                            }
-
-                        } else {
-                            writer.write("</b>")
-                            0
-                        }
-                        check = 0
-                    } else if (line[sym + 1] != '*' && count == 1) {
-                        i = if (i == 0) {
-                            writer.write("<i>")
-
-                            if (b == 1) 2
-                            else 1
-                        } else {
-                            writer.write("</i>")
-                            0
-                        }
-                        check = 0
-                    }
-                }
-                '~' -> {
-                    when (s) {
-                        0, 2 -> {
-                            s += 1
-                            continue@loop
-                        }
-                        1 -> {
-                            s += 1
-                            writer.write("<s>")
-                        }
-                        3 -> {
-                            writer.write("</s>")
-                            s = 0
-                        }
-                    }
-                }
-                else -> writer.write("${line[sym]}")
+            if (line.isEmpty()) {
+                if (p != 0) writer.write("</p><p>")
+                else writer.write("<p>")
+                p = 1
+                continue
             }
 
-            if (check == 0)
-                count = 0
+            if (p == 0) {
+                writer.write("<p>")
+                p = 1
+            }
+
+            loop@ for (sym in 0 until line.length) {
+                var check = 0
+                when (line[sym]) {
+                    '*' -> {
+                        count += 1
+                        if (line[sym + 1] == '*') {
+                            check += 1
+                            continue@loop
+                        } else if (count == 3) {
+                            if (i == 0 && b == 0) {
+                                writer.write("<b><i>")
+                                b = 1
+                                i = 2
+                            } else {
+                                if (b > i)
+                                    writer.write("</b></i>")
+                                else
+                                    writer.write("</i></b>")
+                                b = 0
+                                i = 0
+                            }
+                        } else if (line[sym + 1] != '*' && count == 2) {
+                            b = if (b == 0) {
+                                writer.write("<b>")
+                                if (i == 1) 2
+                                else {
+                                    1
+                                }
+
+                            } else {
+                                writer.write("</b>")
+                                0
+                            }
+                            check = 0
+                        } else if (line[sym + 1] != '*' && count == 1) {
+                            i = if (i == 0) {
+                                writer.write("<i>")
+
+                                if (b == 1) 2
+                                else 1
+                            } else {
+                                writer.write("</i>")
+                                0
+                            }
+                            check = 0
+                        }
+                    }
+                    '~' -> {
+                        when (s) {
+                            0, 2 -> {
+                                s += 1
+                                continue@loop
+                            }
+                            1 -> {
+                                s += 1
+                                writer.write("<s>")
+                            }
+                            3 -> {
+                                writer.write("</s>")
+                                s = 0
+                            }
+                        }
+                    }
+                    else -> writer.write("${line[sym]}")
+                }
+
+                if (check == 0)
+                    count = 0
+            }
+
+            writer.newLine()
         }
 
-        writer.newLine()
+        if (p == 1)
+            writer.write("</p>")
+
+        writer.write("</body></html>")
+        writer.close()
     }
-
-    if (p == 1)
-        writer.write("</p>")
-
-    writer.write("</body></html>")
-    writer.close()
 }
 
 /**
