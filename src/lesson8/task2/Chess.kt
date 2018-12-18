@@ -2,7 +2,6 @@
 
 package lesson8.task2
 
-import lesson4.task1.abs
 import kotlin.math.abs
 
 /**
@@ -375,7 +374,7 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int =
+fun knightMoveNumber(start: Square, end: Square): Int = TODO()
 
 /**
  * Очень сложная
