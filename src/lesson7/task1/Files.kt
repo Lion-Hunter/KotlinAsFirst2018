@@ -278,6 +278,7 @@ fun top20Words(inputName: String): Map<String, Int> {
         wordsMap.remove(w)
     }
 
+    if ("" in result) result.remove("")
     return result
 }
 
