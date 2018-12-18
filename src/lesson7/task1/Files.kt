@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import lesson4.task1.squares
 import java.io.File
 
 /**
@@ -348,37 +349,50 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val reader = File(inputName).bufferedReader().readLines()
     val writer = File(outputName).bufferedWriter()
-    val wordsMap = mutableMapOf<String, Int>()
+    val words = mutableListOf<Pair<String, Int>>()
     var maxLength = 0
     val result = mutableListOf<String>()
+    var count = 0
 
     for (read in reader) {
-        val line = read.toLowerCase()
-        val symbols = emptyList<Char>().toMutableList()
+        val line = read.toLowerCase().trim()
+        val symbols = mutableSetOf<Char>()
         var length = 0
 
-        for (i in line) {
-            if (i in symbols) {
-                length = 0
-                break
-            } else {
-                length += 1
-                symbols += i
+        if (count == 0) {
+            for (symbol in line.substring(1 until line.length)) {
+                if (symbol in symbols) {
+                    length = 0
+                    break
+                } else {
+                    symbols += symbol
+                    length += 1
+                }
             }
         }
 
-        if (length == read.length) {
-            wordsMap[read] = length
-            result += read
+        for (symbol in line) {
+            if (symbol in symbols) {
+                length = 0
+                break
+            } else {
+                symbols += symbol
+                length += 1
+            }
+        }
+
+        if (length != 0) {
+            words += read to length
             if (length > maxLength)
                 maxLength = length
         }
 
+        count += 1
     }
 
-    wordsMap.forEach {
-        if (it.value != maxLength)
-            result.remove(it.key)
+    words.forEach {
+        if (it.second == maxLength)
+            result += it.first
     }
 
     writer.write(result.joinToString(separator = ", "))
