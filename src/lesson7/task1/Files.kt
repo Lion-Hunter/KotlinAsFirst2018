@@ -369,15 +369,15 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
                     length += 1
                 }
             }
-        }
-
-        for (symbol in line) {
-            if (symbol in symbols) {
-                length = 0
-                break
-            } else {
-                symbols += symbol
-                length += 1
+        } else {
+            for (symbol in line) {
+                if (symbol in symbols) {
+                    length = 0
+                    break
+                } else {
+                    symbols += symbol
+                    length += 1
+                }
             }
         }
 
